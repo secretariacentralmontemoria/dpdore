@@ -1,0 +1,59 @@
+DPDORE — Sistema de Gestão Operacional V9.0.3 (ficheiros separados, instalável)
+
+index.html             estrutura da página (HTML semântico; sem estilos nem scripts embutidos)
+css/styles.css         estilos (variáveis :root, modo claro/escuro, mobile-first, estados :hover/:focus/:active/:disabled)
+js/vendor/             bibliotecas: Chart.js, SheetJS, JSZip, PptxGenJS
+js/data.js             dados iniciais
+js/app.js              aplicação. Novidades da V9.0 (secções 11q–11w):
+                         11q  tabelas: filtro avançado em cada coluna e colunas configuráveis (todas as listas); sequência do survey
+                         11r  importação (obrigatórios por aba, correspondências memorizadas, duplicados) e exportação
+                              (ordem das colunas, exportações resumidas com cores, exportação em massa por fornecedor)
+                         11s  stock: links possíveis por regras (Ericsson, Huawei, FWA, GPON, armazém Talatona)
+                         11t  P2P-FH: Huawei / Ericsson e lista de rádios
+                         11u  gráficos (largura das colunas, tamanho, origem dos dados), cores dos serviços, performance dos empreiteiros
+                         11v  separadores da apresentação, organigrama livre e visibilidade, painel configurável, abas novas e duplicadas
+                         11w  pasta das cópias (arranque), duplicados no restauro, partilhar / instalar
+js/pwa.js              registo do modo sem internet
+sw.js                  service worker (funciona sem internet; com internet carrega sempre a versão mais recente)
+manifest.webmanifest   instalação como aplicação (ícones em icons/)
+
+INSTALAR: publique esta pasta (GitHub Pages, SharePoint ou servidor https) e abra o endereço no Chrome / Edge → «Instalar».
+No telemóvel: Android → «Instalar aplicação»; iPhone (Safari) → Partilhar › Adicionar ao ecrã principal.
+O ficheiro único DPDORE_Sistema_Gestao_Operacional_V9_0.html tem o mesmo conteúdo e funciona aberto directamente no computador.
+DADOS: ficam no navegador de cada aparelho (sem limite fixo: depende do espaço livre). Passam-se entre postos com as cópias
+de segurança ou com a «Pasta das cópias» (Cópias de segurança), que é consultada no arranque.
+
+V9.0.1 — arranque isolado de outras aplicações no mesmo domínio:
+  - manifest.webmanifest: identidade própria («dpdore-gestao-operacional») e âmbito limitado à pasta do DPDORE;
+  - sw.js: só trata pedidos da pasta do DPDORE (não interfere com o Monte Moriá nem outras apps do mesmo endereço); nova cache;
+  - index.html: nome da aplicação definido para o navegador / sistema.
+SE O DPDORE ABRIR DENTRO DE OUTRA APLICAÇÃO INSTALADA (ex.: janela «Finanças da Congregação — Centro Monte Moriá»):
+  feche essa janela, abra o endereço do DPDORE no Chrome/Edge e use «Instalar» no próprio DPDORE; depois desinstale a app antiga.
+  Para limpar a versão antiga em cache: F12 › Application › Service Workers › Unregister, e Storage › Clear site data (só dos ficheiros em cache; faça antes uma cópia de segurança).
+
+V9.0.2 — Stock: o painel «Links possíveis com o stock» (cálculo automático dos links) passa a ser recolhível:
+  - fica FECHADO por omissão (só mostra o título e o total de links); abre/fecha com clique, Enter ou Espaço;
+  - o estado (aberto/fechado) mantém-se enquanto actualiza quantidades; o botão «Regras dos links…» (administrador) fica dentro do painel;
+  - a cache foi renovada (v=9c0f2a01).
+PUBLICAÇÃO: coloque o DPDORE num repositório NOVO, separado do Monte Moriá (mesma pasta/repositório = mesmo âmbito da app instalada).
+
+V9.0.3 — CÓPIAS COMPLETAS E SINCRONIZAÇÃO ENTRE POSTOS
+  PROBLEMA ENCONTRADO: as cópias de segurança (e a pasta das cópias) NÃO incluíam os Routers, as OLT nem os encaminhamentos
+  GPON (Planeamento), a apresentação dos relatórios e o histórico de alterações. Ao carregar uma cópia noutro computador
+  esses dados não apareciam. Cópias feitas antes da V9.0.3 continuam sem eles: os dados ainda existem no posto de origem
+  (e nos seus «Pontos de restauro»); abra lá a V9.0.3 e exporte nova cópia completa.
+  CORRIGIDO: 
+  - cobertura total (novo módulo «Routers, OLT e encaminhamentos GPON» e módulo «Outros dados» que apanha colecções novas);
+  - botão «Verificar cópia» (Cópias de segurança): gera a cópia, lê-a como num restauro e compara módulo a módulo; é executado
+    também a cada exportação completa;
+  - pasta das cópias: grava SEMPRE as últimas alterações (antes podia esperar 30 min e perder alterações ao fechar), grava ao
+    sair da página e procura actualizações no arranque para TODOS os utilizadores (antes só o administrador);
+  - SINCRONIZAÇÃO (pasta da rede ligada): ficheiro «dpdore-sync-dados.json». Cada posto lê/grava esse ficheiro e junta as
+    alterações por registo (fusão a três vias a partir da última versão sincronizada): vários utilizadores a trabalhar ao
+    mesmo tempo não se apagam uns aos outros; apagados também se propagam; conflito só se o MESMO campo do MESMO registo
+    for alterado ao mesmo tempo (fica a versão de quem sincroniza por último). Remoções em massa (>25 registos) vindas de
+    outro posto pedem confirmação. Antes de fusões com remoções/conflitos cria-se um ponto de restauro.
+  COMO USAR: em cada posto (Chrome/Edge) — Cópias de segurança › «Ligar pasta das cópias…» e escolha a MESMA pasta da rede.
+  O primeiro posto publica os dados; nos seguintes escolha «Carregar tudo» (posto novo) ou «Fundir» (posto com dados próprios).
+  LIMITES: os anexos de facturas/AMD ficam em cada posto (opção «Incluir os anexos» só nas cópias); o ficheiro único .html e
+  a versão instalável usam o mesmo código; sem a pasta ligada não há sincronização (use as cópias de segurança).
