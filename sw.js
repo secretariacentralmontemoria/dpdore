@@ -3,17 +3,17 @@ const CACHE = "dpdore-v903-b3e71d04";
 const FILES = [
   "./",
   "./index.html",
-  "./css/styles.css?v=b3e71d04",
-  "./js/vendor/chart.umd.min.js",
-  "./js/vendor/xlsx.full.min.js",
-  "./js/vendor/jszip.min.js",
-  "./js/vendor/pptxgen.min.js",
-  "./js/data.js?v=b3e71d04",
-  "./js/app.js?v=b3e71d04",
-  "./js/pwa.js?v=b3e71d04",
+  "./styles.css?v=b3e71d04",
+  "./chart.umd.min.js",
+  "./xlsx.full.min.js",
+  "./jszip.min.js",
+  "./pptxgen.min.js",
+  "./data.js?v=b3e71d04",
+  "./app.js?v=b3e71d04",
+  "./pwa.js?v=b3e71d04",
   "./manifest.webmanifest",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png"
+  "./icon-192.png",
+  "./icon-512.png"
 ];
 const ESPERA_REDE = 3500;
 self.addEventListener("install", (e) => {
