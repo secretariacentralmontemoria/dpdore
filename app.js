@@ -6118,14 +6118,16 @@ const Backup = {
   dialog(parsed, source) {
     const { kind, data, meta, parts } = parsed;
     const avail = BACKUP_PARTS.filter((p) => parts.includes(p[0]));
+    const full = parts.length >= 10;   // cópia completa: por omissão substitui (fundir duplica registos vindos de outro posto)
     const m = UI.modal({ title: 'Restaurar dados', size: 'wide',
       body: `<p class="note mb-12"><b>${esc(kind)}</b> · ${esc(source)}${meta.exportedAt ? ` · exportada em ${esc(new Date(meta.exportedAt).toLocaleString('pt-PT'))}` : ''}${meta.exportedBy ? ` por ${esc(meta.exportedBy)}` : ''}.
         Antes de aplicar é criado automaticamente um ponto de restauro com os dados actuais.</p>
         <div class="table-wrap"><table><caption class="sr-only">Módulos presentes na cópia</caption><thead><tr><th scope="col">Restaurar</th><th scope="col">Módulo</th><th scope="col" class="num">Na cópia</th><th scope="col" class="num">Actuais</th></tr></thead><tbody>
           ${avail.map((p) => `<tr><td><input type="checkbox" data-part="${p[0]}" checked aria-label="Restaurar ${esc(p[1])}"${p[0] === 'users' ? ' data-users' : ''}></td><td>${esc(p[1])}</td><td class="num">${fmtInt(Backup.partCount(p, data))}</td><td class="num">${fmtInt(Backup.partCount(p, DB))}</td></tr>`).join('')}</tbody></table></div>
         <fieldset class="m-0 mt-12"><legend class="h4 m-0">Modo</legend><div class="inline-checks mt-8">
-          <label><input type="radio" name="bkmode" value="merge" checked> Fundir — actualiza registos com o mesmo identificador, ignora registos iguais e adiciona os novos</label>
-          <label><input type="radio" name="bkmode" value="replace"> Substituir — os módulos seleccionados ficam iguais aos da cópia</label></div></fieldset>
+          <label><input type="radio" name="bkmode" value="replace"${full ? ' checked' : ''}> Substituir (recomendado para uma cópia completa) — os módulos seleccionados ficam exactamente iguais aos da cópia, sem duplicados</label>
+          <label><input type="radio" name="bkmode" value="merge"${full ? '' : ' checked'}> Fundir — junta a cópia aos dados actuais</label></div>
+          <p class="note warn mt-8" data-merge-warn${full ? ' hidden' : ''}><b>Atenção:</b> ao fundir uma cópia que veio de outro posto, os registos que foram alterados lá aparecem <b>duas vezes</b> (a versão antiga daqui e a nova) e os que foram apagados lá <b>reaparecem</b>. Use «Fundir» só para acrescentar registos novos a dados que já são do mesmo posto.</p></fieldset>
         <div class="inline-checks mt-12"><label><input type="checkbox" data-keep-users checked> Manter os utilizadores e a palavra-passe de administrador actuais${meta.usersInvalid ? ' (a cópia não tem nenhum administrador válido)' : ''}</label></div>
         <p class="form-error" role="alert"></p>`,
       foot: '<button class="btn" data-close>Cancelar</button><button class="btn danger" data-go>Restaurar</button>' });
@@ -6133,6 +6135,7 @@ const Backup = {
     if (meta.usersInvalid) { keep.checked = true; keep.disabled = true; }
     const sync = () => { if (uBox) { uBox.disabled = keep.checked; if (keep.checked) uBox.checked = false; } };
     keep.addEventListener('change', sync); sync();
+    $$('[name=bkmode]', m.el).forEach((r) => r.addEventListener('change', () => { const w = $('[data-merge-warn]', m.el); if (w) w.hidden = $('[name=bkmode]:checked', m.el)?.value !== 'merge'; }));
     $('[data-go]', m.el).addEventListener('click', async () => {
       const sel = $$('[data-part]:checked', m.el).map((c) => c.dataset.part); const err = $('.form-error', m.el);
       if (!sel.length) { err.textContent = 'Escolha pelo menos um módulo.'; return; }

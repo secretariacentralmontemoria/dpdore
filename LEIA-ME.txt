@@ -1,4 +1,4 @@
-DPDORE — Sistema de Gestão Operacional V9.0.3 (ficheiros separados, instalável)
+DPDORE — Sistema de Gestão Operacional V9.0.4 (ficheiros separados, instalável)
 
 index.html             estrutura da página (HTML semântico; sem estilos nem scripts embutidos)
 css/styles.css         estilos (variáveis :root, modo claro/escuro, mobile-first, estados :hover/:focus/:active/:disabled)
@@ -57,3 +57,10 @@ V9.0.3 — CÓPIAS COMPLETAS E SINCRONIZAÇÃO ENTRE POSTOS
   O primeiro posto publica os dados; nos seguintes escolha «Carregar tudo» (posto novo) ou «Fundir» (posto com dados próprios).
   LIMITES: os anexos de facturas/AMD ficam em cada posto (opção «Incluir os anexos» só nas cópias); o ficheiro único .html e
   a versão instalável usam o mesmo código; sem a pasta ligada não há sincronização (use as cópias de segurança).
+
+V9.0.4 — RESTAURO SEM DUPLICADOS
+  CAUSA: o modo «Fundir» (predefinido) identifica os registos pelo identificador interno. Registos que foram alterados noutro
+  posto, ou que o posto novo já trazia com valores iniciais, aparecem DUAS vezes (versão antiga + nova), e os apagados
+  reaparecem. Não é perda de dados: é a forma de funcionar da fusão.
+  CORRIGIDO: numa cópia completa o modo predefinido passa a ser «Substituir» (módulos iguais aos da cópia, sem duplicados),
+  e «Fundir» mostra um aviso claro. Para limpar duplicados já criados: restaure de novo a cópia completa em modo «Substituir».
